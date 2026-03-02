@@ -1,0 +1,22 @@
+server:
+  servlet:
+    context-path: /ye
+  port: 8080
+spring:
+  application:
+    name: backend
+  datasource:
+   driver-class-name: com.mysql.cj.jdbc.Driver
+   url: jdbc:mysql://localhost:3306/backend?charcterEcoding=UTF-8&&serverTimezone=Asia/Shanghai
+   username: root
+   password: 123456
+   type: com.alibaba.druid.pool.DruidDataSource   # 数据库连接池
+   druid:
+       initial-size: 5              # 初始化大小
+       min-idle: 5                  # 最小连接数
+       max-active: 20               # 最大连接数
+       max-wait: 60000              # 获取连接时最大等待时间
+       vaildation-query: SELECT 1   # 测试连接是否有效的SQL语句，为空时以下三个配置均无效
+       test-on-borrow: true         # 申请连接时执行vaildationQuery检测连接是否有效，开启后会降低性能
+       test-while-idle: true        # 申请连接时时如果空间时间超过min-evictable-idle-time-millis，执行vaildationQuery检测连接是否有效，开启后会降低性能
+       test-on-return: true         # 归还连接时执行vaildationQuery检测连接是否有效，开启后会降低性能
