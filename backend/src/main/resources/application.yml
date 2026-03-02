@@ -20,3 +20,21 @@ spring:
        test-on-borrow: true         # 申请连接时执行vaildationQuery检测连接是否有效，开启后会降低性能
        test-while-idle: true        # 申请连接时时如果空间时间超过min-evictable-idle-time-millis，执行vaildationQuery检测连接是否有效，开启后会降低性能
        test-on-return: true         # 归还连接时执行vaildationQuery检测连接是否有效，开启后会降低性能
+# springdoc-openapi项目配置
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: com.example.backend.controller
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: api
