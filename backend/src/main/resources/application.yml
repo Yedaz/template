@@ -38,3 +38,11 @@ knife4j:
   setting:
     language: zh_cn
     swagger-model-name: api
+
+mybatis-plus:
+  configuration:
+  # MyBatis Plus 配置 开启驼峰功能
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # MyBatis应用的实体类自定义别名
+  type-aliases-package: com.example.backend.entity

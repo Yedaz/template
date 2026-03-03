@@ -1,8 +1,13 @@
 package com.example.backend.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.backend.entity.Admin;
+import com.example.backend.exception.BussinessException;
 import com.example.backend.response.R;
+import com.example.backend.response.ResponseCode;
 import com.example.backend.sevice.impl.AdminServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
@@ -23,13 +28,24 @@ public class AdminController {
     @Operation(summary = "添加管理员信息")
     @PostMapping("/admin/add")
     public R add(@RequestBody Admin admin){
+        LambdaQueryWrapper<Admin> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.eq(Admin::getUsername,admin.getUsername());
+       if (adminService.count(lambdaQueryWrapper) > 0){
+            throw new BussinessException(ResponseCode.USERNAME_EXIST);
+        }
         adminService.save(admin);
         return R.success();
     }
     @Operation(summary = "查询所有管理员信息")
-    @GetMapping("/admin/list")
-    public R<List<Admin>> list(){
-        return R.data(adminService.list());
+    @PostMapping("/admin/list")
+    public R<PageInfo<Admin>> list(@RequestBody Admin admin, @RequestParam Integer pageNum, @RequestParam Integer pageSize){
+        LambdaQueryWrapper<Admin> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        lambdaQueryWrapper.like(admin.getName() != null, Admin::getName,admin.getName());
+        lambdaQueryWrapper.like(admin.getTel() != null, Admin::getTel,admin.getTel());
+        PageHelper.startPage(pageNum,pageSize);
+        List<Admin> list = adminService.list();
+        PageInfo<Admin> pageInfo = new PageInfo(list);
+        return R.data(pageInfo);
     }
     @Operation(summary = "修改管理员信息")
     @PostMapping("/admin/update")

@@ -9,7 +9,7 @@ public enum ResponseCode {
     SUCCESS(200, "操作成功"),
     ERROR(500, "服务器错误"),
     USER_NOT_EXIST(400, "用户不存在"),
-    USER_EXIST(400, "用户已存在"),
+    USERNAME_EXIST(1001, "用户名已存在！"),
     USER_NOT_LOGIN(400, "用户未登录"),
     USER_NOT_ADMIN(400, "用户不是管理员"),
     USER_NOT_AUTHORIZED(400, "用户无权限"),
