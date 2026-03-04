@@ -11,6 +11,10 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "axios": "^1.13.6",
+    "dayjs": "^1.11.19",
+    "element-plus": "^2.13.3",
+    "less": "^4.5.1",
     "pinia": "^3.0.4",
     "vue": "^3.5.29",
     "vue-router": "^5.0.3"
