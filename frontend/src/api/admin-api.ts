@@ -19,12 +19,12 @@ export const adminApi = {
     },
     /**
      * 删除管理员
-     * @param id 
+     * @param ids 管理员id列表
      * @returns 
      */
-    delete: (id : any) => {
-        return post('/admin/delete?id=' + id, {});
-        // return post('/admin/delete', { id });
+    delete: (ids : any) => {
+        return post('/admin/del?ids=' + ids, {});
+        // return post('/admin/del', { ids });
     },
     /**
      * 

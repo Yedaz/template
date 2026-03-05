@@ -9,13 +9,13 @@
             </el-form-item>
             <el-form-item>
                 <el-button @click="onSearch()" type="primary">查询</el-button>
-                <el-button type="success" @click="add()">新增</el-button>
-                <el-button type="danger">批量删除</el-button>
+                <el-button @click="add()" type="success" >新增</el-button>
+                <el-button @click="confirmDel()" type="danger">批量删除</el-button>
                 <el-button type="info">重置</el-button>
             </el-form-item>
         </el-form>
         <el-divider border-style="dashed" />
-        <el-table border :data="datalist" v-loading="listLoading" style="width: 100%" :header-cell-style="{ background: '#f5f5f5', color: '#000', fontWeight: 'bold' }">
+        <el-table border :data="datalist" v-loading="listLoading" style="width: 100%" :header-cell-style="{ background: '#f5f5f5', color: '#000', fontWeight: 'bold' }" @selection-change="handleSelectionChange">
             <el-table-column type="selection" width="55" />
             <el-table-column header-align="center" align="center" prop="username" label="用户名" />
             <el-table-column header-align="center" align="center" prop="name" label="姓名" />
@@ -24,8 +24,8 @@
             <el-table-column header-align="center" align="center" prop="headurl" label="头像" />
             <el-table-column header-align="center" align="center" label="操作" width="160">
                 <template #default="scope">
-                    <el-button type="text" size="small">编辑</el-button>
-                    <el-button type="text" size="small">删除</el-button>
+                    <el-button type="text" size="small" @click="update(scope.row)">编辑</el-button>
+                    <el-button type="text" size="small" @click="confirmDel(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -38,6 +38,7 @@ import { onMounted, ref, reactive } from 'vue';
 import { adminApi } from '@/api/admin-api';
 import Constants from '@/utils/constants';
 import Addorupdate from './Addorupdate.vue';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 //列表数据
 const datalist = ref([]);
@@ -47,6 +48,8 @@ const listLoading = ref(false);
 const total = ref(0);
 //定义应用新增或修改组件的响应式变量
 const addorupdateRef = ref();
+//所有选中的记录
+const multipeSelection = ref([]);
 //表单的初始值
 const qeryFormState = {
     name: '',
@@ -86,6 +89,60 @@ function handleCurrentPageChange(val: number) {
 function add() {
     addorupdateRef.value.showModel();
 }
+/**
+ * 更新管理员
+ */
+function update(row) {
+    addorupdateRef.value.showModel(row);
+}
+
+/**
+ * 确认删除管理员
+ */
+function confirmDel(id){
+    ElMessageBox.confirm(
+    '是否确认删除选中管理员吗？',
+    '确认删除',
+    {
+      confirmButtonText: '确认',
+      cancelButtonText: '取消',
+      type: 'warning',
+      center: true,
+    }
+  )
+    .then(() => {
+        del(id);
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '用户已取消删除',
+      })
+    })
+}
+
+
+/**
+ * 删除管理员
+ */
+async function del(id){
+    try {
+        listLoading.value = true;
+        let ids = id?[id]:multipeSelection.value.map(item=>item.id);
+        await adminApi.delete(ids);
+        ElMessage.success('删除成功');
+        getList();
+    }catch(error){
+        console.log(error);
+    }finally{
+        listLoading.value = false;
+    }
+}
+
+function handelSelectionChange(val){
+    multipeSelection.value = val;
+}
+
 
 onMounted(getList);
 </script>

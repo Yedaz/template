@@ -1,15 +1,15 @@
 <template>
   <el-dialog
     v-model="Visible"
-    title="新增"
+    :title="!form.id?'新增':'修改'"
     width="30%"
   >
     <el-form :rules="rules" :model="form" ref="formRef" label-width="100px">
     <el-form-item label="用户名" prop="username">
-      <el-input v-model="form.username" style="width: 50%"/>
+      <el-input v-model="form.username" :disabled="form.id" style="width: 50%"/>
     </el-form-item>
     <el-form-item label="密码" prop="userpwd">
-      <el-input v-model="form.userpwd" style="width: 50%"/>
+      <el-input v-model="form.userpwd" type="password" style="width: 50%"/>
     </el-form-item>
     <el-form-item label="姓名" prop="name">
       <el-input v-model="form.name" style="width: 50%"/>
@@ -42,14 +42,20 @@
 <script setup lang="ts">
 import { reactive, ref } from "vue";
 import { adminApi } from "@/api/admin-api";
+import { ElMessage } from "element-plus";
 
 //对话框显示状态
 const Visible = ref(false);
 const btnLoading = ref(false);
 const emit = defineEmits(['refresh'])
 
-function showModel() {
-  Visible.value = true;
+function showModel(row) {
+    if(row){
+        Object.assign(form,row)
+    }else{
+        Object.assign(form,formDefault)
+    }
+    Visible.value = true;
 }
 // 公开父组件可以调用的方法
 defineExpose({showModel})
@@ -67,14 +73,24 @@ const formDefault = {
 let form = reactive({...formDefault});
 
 function onSubmit() {
-    btnLoading.value = true;
-    formRef.value.validate().then(async () =>{
-        adminApi.add(form).then(() =>{
+    try {
+        btnLoading.value = true;
+        formRef.value.validate().then(async () =>{
+            if(form.id){
+                await adminApi.update(form)
+            }else{
+                await adminApi.add(form)
+            }
+            ElMessage.success(form.id?'修改成功':'新增成功');
             btnLoading.value = false;
             Visible.value = false;
             emit('refresh')
         })
-    })
+    } catch (error) {
+        console.log(error);
+    } finally {
+        btnLoading.value = false;
+    }
 }
 
 const rules = reactive({
