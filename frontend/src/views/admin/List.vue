@@ -9,7 +9,7 @@
             </el-form-item>
             <el-form-item>
                 <el-button @click="onSearch()" type="primary">查询</el-button>
-                <el-button type="success">新增</el-button>
+                <el-button type="success" @click="add()">新增</el-button>
                 <el-button type="danger">批量删除</el-button>
                 <el-button type="info">重置</el-button>
             </el-form-item>
@@ -30,18 +30,23 @@
             </el-table-column>
         </el-table>
         <el-pagination @current-change="handleCurrentPageChange" background layout="prev, pager, next" :total="total" style="float: right;margin: 10px 20px 20px 0px;" />
+        <Addorupdate @refresh="getList" ref="addorupdateRef" />
     </div>
 </template>
 <script setup lang="ts">
 import { onMounted, ref, reactive } from 'vue';
 import { adminApi } from '@/api/admin-api';
 import Constants from '@/utils/constants';
+import Addorupdate from './Addorupdate.vue';
+
 //列表数据
 const datalist = ref([]);
 //列表加载状态
 const listLoading = ref(false);
 //数据总条数
 const total = ref(0);
+//定义应用新增或修改组件的响应式变量
+const addorupdateRef = ref();
 //表单的初始值
 const qeryFormState = {
     name: '',
@@ -74,5 +79,13 @@ function handleCurrentPageChange(val: number) {
     queryForm.pageNum = val;
     getList();
 }
+
+/**
+ * 新增管理员
+ */
+function add() {
+    addorupdateRef.value.showModel();
+}
+
 onMounted(getList);
 </script>
