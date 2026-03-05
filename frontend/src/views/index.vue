@@ -29,7 +29,6 @@
     import Header from '@/components/Header.vue';
     import LeftMenu from '@/components/LeftMenu.vue';
     import Footer from '@/components/Footer.vue';
-
     import { ref, reactive } from 'vue';
     /**
      * 定义内容区域常量 站点内容高度
