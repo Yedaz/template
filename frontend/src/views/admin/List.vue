@@ -139,7 +139,7 @@ async function del(id){
     }
 }
 
-function handelSelectionChange(val){
+function handleSelectionChange(val){
     multipeSelection.value = val;
 }
 
