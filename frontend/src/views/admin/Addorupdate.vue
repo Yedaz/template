@@ -73,31 +73,65 @@ const formDefault = {
 let form = reactive({...formDefault});
 
 function onSubmit() {
+  formRef.value.validate().then(async () =>{
     try {
         btnLoading.value = true;
-        formRef.value.validate().then(async () =>{
-            if(form.id){
-                await adminApi.update(form)
-            }else{
-                await adminApi.add(form)
-            }
-            ElMessage.success(form.id?'修改成功':'新增成功');
-            btnLoading.value = false;
-            Visible.value = false;
-            emit('refresh')
-        })
+        if(form.id){
+          await adminApi.update(form)
+        }else{
+            await adminApi.add(form)
+        }
+        ElMessage.success(form.id?'修改成功':'新增成功');
+        btnLoading.value = false;
+        Visible.value = false;
+        emit('refresh')    
     } catch (error) {
         console.log(error);
     } finally {
         btnLoading.value = false;
     }
+  })
 }
+
+//校验用户名是否存在
+const checkUsername = async (rule: any, value: any, callback: any) => {
+    try {
+        const res: any = await adminApi.checkUsername({'username': value});
+        callback(res.data.code == 200 ? null : '用户名已存在');  
+      } catch (e: any) {
+        callback(new Error(e.message));
+    }
+};
+//手机号格式校验
+const checkTel = (rule: any, value: any, callback: any) => {
+    const phone = /^1[3456789]\d{9}$/;
+    if (!value) {
+        callback(new Error('手机号不能为空'));
+    } 
+    setTimeout(() => {
+      if(!phone.test(value)){
+        callback(new Error('手机号格式错误'));
+      }
+      else{
+        if(!Number.isInteger(Number(value))){
+          callback(new Error('请输入数字键'));
+        }
+        else{
+          callback();
+        }
+    }
+  }, 100);
+};
 
 const rules = reactive({
   username: [
     {
       required: true,
       message: '请输入用户名',
+      trigger: 'blur',
+    },
+    {
+      validator: checkUsername,
       trigger: 'blur',
     },
   ],
@@ -126,6 +160,10 @@ const rules = reactive({
     {
       required: true,
       message: '请输入手机号',
+      trigger: 'blur',
+    },
+    {
+      validator: checkTel,
       trigger: 'blur',
     },
   ],

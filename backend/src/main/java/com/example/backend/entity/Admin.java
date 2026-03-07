@@ -1,6 +1,7 @@
 package com.example.backend.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -46,4 +47,10 @@ public class Admin {
      */
     @Schema(description = "头像")
     private String headurl;
+    @TableField(exist = false)
+    private String captchaId;
+    @TableField(exist = false)
+    private String captchaCode;
+    @TableField(exist = false)
+    private String token;
 }

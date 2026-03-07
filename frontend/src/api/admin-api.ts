@@ -35,4 +35,20 @@ export const adminApi = {
     queryPageList: (param : any, pageNum: any, pageSize: any) => {
         return post('/admin/list?pageNum=' + pageNum + '&pageSize=' + pageSize, param)
     },
+    /**
+     * 检验用户名是否存在
+     * @param username 用户名
+     * @returns 
+     */
+    checkUsername: (param : any) => {
+        return get('/admin/checkUsername' + param);
+    },
+    /**
+     * 登录
+     * @param param 
+     * @returns 
+     */
+    login: (param : any) => {
+        return post('/admin/login', param);
+    },
 }
