@@ -1,5 +1,6 @@
 package com.example.backend.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.backend.entity.Admin;
@@ -45,6 +46,7 @@ public class AdminController {
     @Operation(summary = "查询所有管理员信息")
     @PostMapping("/admin/list")
     @CrossOrigin
+    @SaCheckLogin
     public R<PageInfo<Admin>> list(@RequestBody Admin admin, @RequestParam Integer pageNum, @RequestParam Integer pageSize){
         LambdaQueryWrapper<Admin> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         lambdaQueryWrapper.like(admin.getName() != null, Admin::getName,admin.getName());
@@ -58,6 +60,7 @@ public class AdminController {
     @Operation(summary = "修改管理员信息")
     @PostMapping("/admin/update")
     @CrossOrigin
+    @SaCheckLogin
     public R update(@RequestBody Admin admin){
         adminService.updateById(admin);
         return R.success();
@@ -65,6 +68,7 @@ public class AdminController {
     @Operation(summary = "删除管理员信息")
     @PostMapping("/admin/del")
     @CrossOrigin
+    @SaCheckLogin
     public R del(@RequestParam List<Long> ids){
         adminService.removeByIds(ids);
         return R.success();
@@ -94,6 +98,13 @@ public class AdminController {
         }
         StpUtil.login(admin1.getId());
         admin1.setToken(StpUtil.getTokenValue());
+        return R.data(admin1);
+    }
+    @PostMapping("/admin/logout")
+    @CrossOrigin
+    @SaCheckLogin
+    public R logout(){
+        StpUtil.logout();
         return R.success();
     }
 }

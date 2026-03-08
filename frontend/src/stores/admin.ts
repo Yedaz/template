@@ -16,8 +16,8 @@ export const useAdminStore = defineStore('admin', () => {
         tel: ''
     })
     const getToken = computed(() => {
-        if(token) {
-            return token
+        if(token.value) {
+            return token.value
         }
         return getLocalStorage(Constants.USER_TOKEN)
     })
@@ -38,6 +38,6 @@ export const useAdminStore = defineStore('admin', () => {
         clearLocalStorage();
     }
 
-    return { token, setAdminInfo, loginout}
+    return { token, setAdminInfo, loginout, admin, getToken}
 
 })

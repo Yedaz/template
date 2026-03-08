@@ -8,7 +8,7 @@
                 当前用户：
                 <span> {{ admin.name }} </span>
                 <span class="header-exit">
-                    <a @click="loginout()">退出</a>
+                    <a @click="logout()">退出</a>
                 </span>
             </div>
         </div>
@@ -22,11 +22,14 @@ import { storeToRefs } from 'pinia'
 const adminStore = useAdminStore();
 const { admin } = storeToRefs(adminStore);
 
-async function loginout() {
+async function logout() {
     try {
-        await adminApi.loginout();
+        await adminApi.logout();
         window.location.href = '/login';
     } catch (error) {
         console.log(error);
+    }finally {
+        adminStore.loginout();
     }
 }
+</script>

@@ -51,4 +51,11 @@ export const adminApi = {
     login: (param : any) => {
         return post('/admin/login', param);
     },
+    /**
+     * 退出登录
+     * @returns 
+     */
+     logout: () => {
+        return post('/admin/logout', {});
+    }
 }
